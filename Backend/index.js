@@ -31,27 +31,53 @@
 
 // startServer();
 
+//3.15
 
 
-const express = require('express')
-const dotenv = require('dotenv')
-const cors = require('cors')
-const connectDB = require('./src/config/db')
-const userRoutes = require('./src/routes/userRoutes')
+// const express = require('express')
+// const dotenv = require('dotenv')
+// const cors = require('cors')
+// const connectDB = require('./src/config/db')
+// const userRoutes = require('./src/routes/userRoutes')
 
-dotenv.config()
-connectDB()
+// dotenv.config()
+// connectDB()
+
+// const app = express()
+
+// app.use(cors())
+// app.use(express.json())
+// app.use("/api/users", userRoutes)
+
+// app.use('/api/users', require('./src/routes/userRoutes'))
+
+// const PORT = process.env.PORT || 5000
+
+// app.listen(PORT, () => {
+//   console.log(`Server running on port ${PORT}`)
+// })
+
+//3.16
+
+require("dotenv").config()
+const express = require("express")
+const cors = require("cors")
 
 const app = express()
 
-app.use(cors())
 app.use(express.json())
-app.use("/api/users", userRoutes)
 
-app.use('/api/users', require('./src/routes/userRoutes'))
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL,
+    credentials: true
+  })
+)
 
-const PORT = process.env.PORT || 5000
+app.get("/api/test", (req, res) => {
+  res.json({ message: "Backend connected successfully" })
+})
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
+app.listen(process.env.PORT, () => {
+  console.log(`Server running on port ${process.env.PORT}`)
 })
