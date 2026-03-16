@@ -1,10 +1,20 @@
-function Login() {
+import { useAuth } from "../context/authContext"
+import { useNavigate } from "react-router-dom"
+
+const Login = () => {
+
+  const { login } = useAuth()
+  const navigate = useNavigate()
+
+  const handleLogin = () => {
+    login("test-token")
+    navigate("/dashboard")
+  }
+
   return (
     <div>
-      <h2>Login Page</h2>
-      <p>This page will allow users to log in.
-          (This is a placeholder. The actual login functionality will be implemented later.)
-      </p>
+      <h1>Login Page</h1>
+      <button onClick={handleLogin}>Test Login</button>
     </div>
   )
 }

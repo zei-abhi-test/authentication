@@ -1,7 +1,7 @@
 const Jwt = require("jsonwebtoken")
 require("dotenv").config()
 import { useContext } from "react"
-import { AuthContext } from "../context/authContext"
+import { AuthContext } from "../../../frontend/src/context/authContext"
 
 
 const authMiddleware = (req, res, next) => {
