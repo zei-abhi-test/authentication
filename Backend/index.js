@@ -1,86 +1,95 @@
-const express = require('express');
-const connectDB = require('./src/Connect/db');
-const router = require('./src/Router/user');
-require('dotenv').config();
-const app = express();
-const authMiddleware = require('./src/middleware/auth');
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(require('cors')());
+require("dotenv").config()
 
-app.get('/', (req, res) => {
-    res.send('Hello World!');
-});
+const express = require("express")
+const cors = require("cors")
 
-app.use('/api',router)
-app.get('/api/protected', authMiddleware, (req, res) => {
-    res.json({ message: "This is a protected route", user: req.user })
-}); 
+const connectDB = require("./src/Connect/db")
+
+const userRoutes = require("./src/Router/user")
+const dataRoutes = require("./src/Router/data")
+
+const authMiddleware = require("./src/middleware/auth")
+
+const app = express()
+
+// ---------- Middleware ----------
+
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    credentials: true
+  })
+)
+
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+
+// ---------- Health Check ----------
+
+app.get("/", (req, res) => {
+  res.json({
+    status: "Server Running",
+    message: "MERN Backend Connected"
+  })
+})
+
+// ---------- Routes ----------
+
+// Auth Routes
+app.use("/api/users", userRoutes)
+
+// CRUD Routes (Protected)
+app.use("/api/data", authMiddleware, dataRoutes)
+
+// Protected Test Route
+app.get("/api/protected", authMiddleware, (req, res) => {
+  res.json({
+    message: "Protected Route Accessed",
+    user: req.user
+  })
+})
+
+// ---------- 404 Handler ----------
+
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: "API route not found"
+  })
+})
+
+// ---------- Global Error Handler ----------
+
+app.use((err, req, res, next) => {
+  console.error(err)
+
+  res.status(err.status || 500).json({
+    success: false,
+    message: err.message || "Internal Server Error"
+  })
+})
+
+// ---------- Server Start ----------
 
 const startServer = async () => {
-    try {
-        await connectDB();
-        console.log('Database Connected Successfully');
+  try {
 
-        app.listen(process.env.PORT, () => {
-            console.log(`Server is running on port ${process.env.PORT}`);
-        });
+    await connectDB()
 
-    } catch (error) {
-        console.error('Error connecting to the database:', error);
-        process.exit(1);
-    }
-};
+    console.log("MongoDB Connected Successfully")
 
-startServer();
+    const PORT = process.env.PORT || 5000
 
-//3.15
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`)
+    })
 
+  } catch (error) {
 
-// const express = require('express')
-// const dotenv = require('dotenv')
-// const cors = require('cors')
-// const connectDB = require('./src/config/db')
-// const userRoutes = require('./src/routes/userRoutes')
+    console.error("Database connection failed:", error)
+    process.exit(1)
 
-// dotenv.config()
-// connectDB()
+  }
+}
 
-// const app = express()
-
-// app.use(cors())
-// app.use(express.json())
-// app.use("/api/users", userRoutes)
-
-// app.use('/api/users', require('./src/routes/userRoutes'))
-
-// const PORT = process.env.PORT || 5000
-
-// app.listen(PORT, () => {
-//   console.log(`Server running on port ${PORT}`)
-// })
-
-//3.16
-
-// require("dotenv").config()
-// const express = require("express")
-// const cors = require("cors")
-
-// const app = express()
-
-// app.use(express.json())
-
-// app.use(
-//   cors({
-//     origin: process.env.CLIENT_URL,
-//     credentials: true
-//   })
-// )
-
-// app.get("/api/test", (req, res) => {
-//   res.json({ message: "Backend connected successfully" })
-// })
-
-// app.listen(process.env.PORT, () => {
-//   console.log(`Server running on port ${process.env.PORT}`)
-// })
+startServer()
