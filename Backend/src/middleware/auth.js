@@ -1,9 +1,11 @@
 const Jwt = require("jsonwebtoken")
 require("dotenv").config()
+import { useContext } from "react"
+import { AuthContext } from "../context/authContext"
 
 
 const authMiddleware = (req, res, next) => {
-  const tok=req.headers.Authorization
+  const tok=req.headers.authorization
   const token = tok && tok.split(' ')[1]
   if (!token) {
     return res.status(401).json({ message: "No token provided" })
@@ -16,6 +18,10 @@ const authMiddleware = (req, res, next) => {
     console.log("Authenticated user:", user)
     next()
   })
+}
+
+export const useAuth = () => {
+    return useContext(AuthContext)
 }
 
 module.exports = authMiddleware
