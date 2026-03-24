@@ -3,10 +3,10 @@ require("dotenv").config()
 const express = require("express")
 const cors = require("cors")
 
-const connectDB = require("./src/Connect/db")
+const connectDB = require("./src/Config/db")
 
-const userRoutes = require("./src/Router/user")
-const dataRoutes = require("./src/Router/data")
+const userRoutes = require("./src/routes/userRoutes")
+// const dataRoutes = require("./src/Router/data")
 
 const authMiddleware = require("./src/middleware/auth")
 
@@ -38,8 +38,8 @@ app.get("/", (req, res) => {
 // Auth Routes
 app.use("/api/users", userRoutes)
 
-// CRUD Routes (Protected)
-app.use("/api/data", authMiddleware, dataRoutes)
+// // CRUD Routes (Protected)
+// app.use("/api/data", authMiddleware, dataRoutes)
 
 // Protected Test Route
 app.get("/api/protected", authMiddleware, (req, res) => {
@@ -48,6 +48,7 @@ app.get("/api/protected", authMiddleware, (req, res) => {
     user: req.user
   })
 })
+
 
 // ---------- 404 Handler ----------
 
