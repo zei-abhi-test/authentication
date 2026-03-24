@@ -24,4 +24,11 @@ router.get("/:id", getUserById)
 router.put("/:id", updateUser)
 router.delete("/:id", deleteUser)
 
+router.get("/protected", authMiddleware, (req, res) => {
+  res.json({
+    message: "You accessed protected route",
+    user: req.user
+  })
+})
+
 module.exports = router
