@@ -12,6 +12,8 @@ const authMiddleware = require("./src/middleware/auth")
 
 const app = express()
 
+const postRoutes = require("./src/routes/postRoutes")
+
 // ---------- Middleware ----------
 
 app.use(
@@ -23,6 +25,7 @@ app.use(
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+app.use("/api/posts", postRoutes)
 
 // ---------- Health Check ----------
 

@@ -1,74 +1,46 @@
-import { useState } from "react"
+// frontend/src/pages/Register.jsx
+import { useState } from "react";
+import api from "../api/api";        // ← Add this import
 
 function Register() {
-
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: ""
-  })
+    name: "", email: "", password: "", confirmPassword: ""
+  });
 
-  const [error, setError] = useState("")
-  const [success, setSuccess] = useState("")
-  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    })
-  }
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    const { name, email, password, confirmPassword } = formData
-
-    if (!name || !email || !password || !confirmPassword) {
-      setError("All fields are required")
-      return
-    }
+    const { name, email, password, confirmPassword } = formData;
 
     if (password !== confirmPassword) {
-      setError("Passwords do not match")
-      return
+      setError("Passwords do not match");
+      return;
     }
 
     try {
-      setLoading(true)
-      setError("")
-      setSuccess("")
+      setLoading(true);
+      setError("");
+      setSuccess("");
 
-      const response = await fetch("/api/users/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ name, email, password })
-      })
+    await api.post("/users/register", { name, email, password });
 
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.message)
-      }
-
-      setSuccess("Registration successful")
-
-      setFormData({
-        name: "",
-        email: "",
-        password: "",
-        confirmPassword: ""
-      })
+      setSuccess("Registration successful! You can now login.");
+      setFormData({ name: "", email: "", password: "", confirmPassword: "" });
 
     } catch (err) {
-      setError(err.message)
+      setError(err.response?.data?.message || "Registration failed");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div>
