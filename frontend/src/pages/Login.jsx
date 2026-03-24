@@ -30,7 +30,7 @@ const Login = () => {
 
     try {
       // Ensure your backend expects "email" and "password" keys
-      const res = await api.post("/api/users/login", formData);
+      const res = await api.post("/users/login", formData);
 
       localStorage.setItem("token", res.data.token);
       navigate("/dashboard");

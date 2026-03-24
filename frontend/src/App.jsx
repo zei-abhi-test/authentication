@@ -7,6 +7,7 @@ import Dashboard from "./pages/Dashboard"
 import ProtectedRoute from "./components/ProtectedRoute"
 import PublicRoute from "./components/PublicRoute"
 import CreatePost from "./pages/CreatePost"
+import EditPost from "./pages/EditPost"
 
 function App() {
 
@@ -48,6 +49,15 @@ function App() {
           element={
             <ProtectedRoute>
               <CreatePost />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/edit-post/:id"
+          element={
+            <ProtectedRoute>
+              <EditPost />
             </ProtectedRoute>
           }
         />
