@@ -1,15 +1,21 @@
-const express = require("express")
-const router = express.Router()
+// backend/src/routes/postRoutes.js
+const express = require("express");
+const router = express.Router();
 
-const authMiddleware = require("../middleware/auth")
-const { createPost, getPosts } = require("../controllers/postController")
-const {updatePost , deletePost , getPostById} = require("../controllers/postController")
+const authMiddleware = require("../middleware/auth");
+const { 
+  createPost, 
+  getPosts, 
+  getPostById, 
+  updatePost, 
+  deletePost 
+} = require("../controllers/postController");
 
-router.put("/:id", authMiddleware, updatePost)
-router.delete("/:id", authMiddleware, deletePost)
-router.get("/:id", authMiddleware, getPostById)
+// All routes are protected
+router.post("/", authMiddleware, createPost);           // POST /api/posts
+router.get("/", authMiddleware, getPosts);              // GET  /api/posts?page=1&limit=5
+router.get("/:id", authMiddleware, getPostById);        // GET  /api/posts/:id
+router.put("/:id", authMiddleware, updatePost);         // PUT  /api/posts/:id
+router.delete("/:id", authMiddleware, deletePost);      // DELETE /api/posts/:id
 
-router.post("/create", authMiddleware, createPost)
-router.get("/posts", authMiddleware, getPosts)
-
-module.exports = router
+module.exports = router;
