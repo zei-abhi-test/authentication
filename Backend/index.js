@@ -14,6 +14,8 @@ const app = express()
 
 const postRoutes = require("./src/routes/postRoutes")
 
+const uploadRoutes = require("./src/routes/upload")
+
 // ---------- Middleware ----------
 
 app.use(
@@ -26,6 +28,7 @@ app.use(
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use("/api/posts", postRoutes)
+app.use("/api/upload", uploadRoutes)
 
 // ---------- Health Check ----------
 
@@ -45,7 +48,7 @@ app.use("/api/users", userRoutes)
 // app.use("/api/data", authMiddleware, dataRoutes)
 
 // Protected Test Route
-app.get("/api/protected", authMiddleware, (req, res) => {
+app.get("/api/users/protected", authMiddleware, (req, res) => {
   res.json({
     message: "Protected Route Accessed",
     user: req.user
