@@ -14,6 +14,8 @@ const app = express()
 
 const postRoutes = require("./src/routes/postRoutes")
 
+const uploadRoutes = require("./src/routes/upload")
+
 // ---------- Middleware ----------
 
 app.use(
@@ -26,6 +28,7 @@ app.use(
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use("/api/posts", postRoutes)
+app.use("/api/upload", uploadRoutes)
 
 // ---------- Health Check ----------
 
