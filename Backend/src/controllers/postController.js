@@ -1,5 +1,5 @@
 // backend/src/controllers/postController.js
-const Post = require("../Model/PostSchema");
+const Post = require("../models/PostSchema");
 
 exports.createPost = async (req, res) => {
   try {
