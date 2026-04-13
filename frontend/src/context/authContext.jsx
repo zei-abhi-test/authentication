@@ -1,6 +1,5 @@
 import { createContext, useContext } from "react";
 
-// Just the context and the hook here
 export const AuthContext = createContext(null);
 
 export const useAuth = () => {
