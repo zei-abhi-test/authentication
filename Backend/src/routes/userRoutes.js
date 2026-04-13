@@ -10,7 +10,8 @@ const {
   getAllUsers,
   getUserById,
   updateUser,
-  deleteUser
+  deleteUser,
+  logoutUser
 } = require("../controllers/userController")
 
 router.post("/register", registerUser)
@@ -23,6 +24,7 @@ router.get("/:id", getUserById)
 
 router.put("/:id", updateUser)
 router.delete("/:id", deleteUser)
+router.post("/logout", authMiddleware, logoutUser)
 
 router.get("/protected", authMiddleware, (req, res) => {
   res.json({

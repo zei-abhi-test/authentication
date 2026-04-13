@@ -1,10 +1,9 @@
 import AppError from "./AppError.js";
 
 const errorHandler = (err, req, res, next) => {
-  let error = { ...err };
-  error.message = err.message;
-
   console.error(err);
+
+  let error = err;
 
   if (err.name === "ValidationError") {
     error = new AppError("Invalid input data", 400);
@@ -16,7 +15,7 @@ const errorHandler = (err, req, res, next) => {
   const response = {
     success: false,
     message: error.message,
-    ...(process.env.NODE_ENV === "development" && { stack: err.stack })
+    ...(process.env.NODE_ENV === "development" && { stack: error.stack })
   };
 
   res.status(error.statusCode).json(response);
