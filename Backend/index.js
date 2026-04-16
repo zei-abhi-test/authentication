@@ -1,3 +1,4 @@
+// backend/index.js  (or your main server file)
 import dotenv from "dotenv";
 dotenv.config(); // Must be at the very top
 
@@ -14,8 +15,6 @@ import uploadRoutes from "./src/routes/upload.js";
 import authMiddleware from "./src/middleware/auth.js";
 import errorhandler from "./src/middleware/errorMiddleware.js";
 
-
-// Initialize Express app
 const app = express();
 
 // ---------- Middleware ----------
@@ -29,13 +28,11 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ---------- Routes ----------
-app.use("/api/posts", postRoutes);
-app.use("/api/auth", userRoutes); 
-app.use("/api/posts/create", postRoutes); 
-app.use("/api/posts", postRoutes(io));
-app.use("/api/upload", uploadRoutes);
+// ---------- Routes (Register WITHOUT io) ----------
 app.use("/api/users", userRoutes);
+app.use("/api/auth", userRoutes);     // Keep if you intentionally want both paths
+app.use("/api/posts", postRoutes);    // Main posts route
+app.use("/api/upload", uploadRoutes);
 
 // Protected route example
 app.get("/api/users/protected", authMiddleware, (req, res) => {
@@ -74,6 +71,9 @@ const io = new Server(httpServer, {
   },
 });
 
+// Attach io to express app so any route can access it safely
+app.set("io", io);
+
 // ---------- Socket.io Authentication Middleware ----------
 io.use((socket, next) => {
   try {
@@ -99,8 +99,6 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log(`🔴 User disconnected: ${socket.id} | Email: ${socket.user?.email || "Unknown"}`);
   });
-
-  // You can add more socket event listeners here
 });
 
 // ---------- Start Server ----------
