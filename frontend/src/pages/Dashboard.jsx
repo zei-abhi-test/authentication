@@ -84,7 +84,6 @@ const Dashboard = () => {
       socket.off("newPost");
       socket.off("connect");
       socket.off("disconnect");
-      // socket.disconnect(); // Usually not needed here, let it manage itself
     };
   }, []);
 
@@ -205,6 +204,21 @@ const Dashboard = () => {
             >
               <h3 style={{ margin: "0 0 10px 0" }}>{p.title}</h3>
               <p>{p.content}</p>
+
+              {/* ✅ Cover Image Display - kept from your extra block */}
+              {p.coverImage && (
+                <img
+                  src={p.coverImage}
+                  alt={`Cover image for ${p.title}`}
+                  style={{
+                    width: "100%",
+                    height: "240px",
+                    objectFit: "cover",
+                    borderRadius: "8px",
+                    marginTop: "12px",
+                  }}
+                />
+              )}
 
               <div style={{ marginTop: "15px", display: "flex", gap: "10px" }}>
                 <button

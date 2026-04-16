@@ -2,16 +2,33 @@
 import { useState } from "react";
 import api from "../api/api";
 import ImageUpload from "../components/ImageUpload";
-import axios from "axios";   // Kept from your second version
+import toast from "react-hot-toast";
 
 const CreatePost = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [coverImageUrl, setCoverImageUrl] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const [creating, setCreating] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
-  // ====================== FORM SUBMIT (Text Post) ======================
+  // Image Upload Handler
+  const handleUpload = async (formData) => {
+    try {
+      setUploading(true);
+      const res = await api.post("/upload", formData);
+      setCoverImageUrl(res.data.imageUrl || res.data.url);
+      toast.success("Image uploaded successfully!");
+    } catch (err) {
+      console.error(err);
+      toast.error("Image upload failed");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  // Form Submit Handler
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -20,45 +37,27 @@ const CreatePost = () => {
       return;
     }
 
-    setLoading(true);
-    setError("");
-    setMessage("");
-
     try {
-      const response = await api.post("/posts", { title, content });
+      setCreating(true);
+      const postData = {
+        title,
+        content,
+        coverImage: coverImageUrl || null,
+      };
 
-      setMessage("Post created successfully! ✅");
+      await api.post("/posts", postData);
+
+      toast.success("Post created successfully!");
       setTitle("");
       setContent("");
-
-      console.log("Post created:", response.data); // For debugging
-    } catch (err) {
-      console.error("Create post error:", err);
-      setError(err.response?.data?.message || "Failed to create post. Please try again.");
+      setCoverImageUrl("");
+      setMessage("Post created successfully! ✅");
+    // eslint-disable-next-line no-unused-vars
+    } catch (error) {
+      setError("Failed to create post");
+      toast.error("Post creation failed");
     } finally {
-      setLoading(false);
-    }
-  };
-
-  // ====================== IMAGE UPLOAD HANDLER (axios version kept) ======================
-  const handleUpload = async (formData) => {
-    try {
-      const token = localStorage.getItem("token");
-
-      const res = await axios.post(
-        "http://localhost:5000/api/upload",
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      console.log("Uploaded:", res.data);
-      // You can add success message or store the image URL here if needed
-    } catch (err) {
-      console.error(err);
+      setCreating(false);
     }
   };
 
@@ -88,23 +87,23 @@ const CreatePost = () => {
           required
         />
 
-        {/* Image Upload Component - kept as per your request */}
+        {/* ✅ Correct Place: ImageUpload goes here */}
         <ImageUpload onUpload={handleUpload} />
 
         <button 
           type="submit" 
-          disabled={loading}
+          disabled={creating || uploading}
           style={{ 
             padding: "12px", 
             fontSize: "16px", 
-            backgroundColor: loading ? "#ccc" : "#007bff",
+            backgroundColor: (creating || uploading) ? "#ccc" : "#007bff",
             color: "white",
             border: "none",
             borderRadius: "4px",
-            cursor: loading ? "not-allowed" : "pointer"
+            cursor: (creating || uploading) ? "not-allowed" : "pointer"
           }}
         >
-          {loading ? "Creating Post..." : "Create"}
+          {creating ? "Creating Post..." : uploading ? "Uploading..." : "Create Post"}
         </button>
       </form>
     </div>
