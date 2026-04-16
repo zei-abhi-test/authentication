@@ -2,6 +2,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/api";
+import { socket } from "../services/socket";
+import toast from "react-hot-toast";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -13,7 +15,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // ====================== AUTH CHECK ======================
+  // ====================== AUTH CHECK + DATA FETCHING ======================
   useEffect(() => {
     const token = localStorage.getItem("token");
 
@@ -27,16 +29,15 @@ const Dashboard = () => {
       setError("");
 
       try {
-        // Fetch user profile (recommended route)
+        // Fetch user profile
         const userRes = await api.get("/users/profile");
 
-        // Fetch posts
+        // Fetch posts with pagination
         const postsRes = await api.get(`/posts?page=${page}&limit=5`);
 
         setUserData(userRes.data);
         setPosts(postsRes.data.posts || postsRes.data || []);
         setTotalPages(postsRes.data.totalPages || 1);
-
       } catch (err) {
         console.error("Dashboard fetch error:", err);
 
@@ -53,7 +54,39 @@ const Dashboard = () => {
     };
 
     fetchDashboardData();
-  }, [page, navigate]);   // Added navigate as dependency
+  }, [page, navigate]);
+
+  // ====================== SOCKET.IO REAL-TIME LISTENING ======================
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (!token) return;
+
+    socket.auth = { token };
+    socket.connect();
+
+    socket.on("connect", () => {
+      console.log("Connected to socket:", socket.id);
+    });
+
+    socket.on("newPost", (data) => {
+      toast.success(data.message || "New post created!");
+
+      // Optional: Refresh posts or add new post to list
+      // You can enhance this later to automatically add the new post
+    });
+
+    socket.on("disconnect", () => {
+      console.log("Socket disconnected");
+    });
+
+    return () => {
+      socket.off("newPost");
+      socket.off("connect");
+      socket.off("disconnect");
+      // socket.disconnect(); // Usually not needed here, let it manage itself
+    };
+  }, []);
 
   // ====================== DELETE POST ======================
   const handleDelete = async (postId) => {
@@ -63,7 +96,7 @@ const Dashboard = () => {
       await api.delete(`/posts/${postId}`);
       alert("Post deleted successfully!");
 
-      // Update UI immediately
+      // Update UI immediately (optimistic update)
       setPosts((prev) => prev.filter((post) => post._id !== postId));
     } catch (err) {
       console.error(err);
@@ -74,11 +107,11 @@ const Dashboard = () => {
   // ====================== LOGOUT ======================
   const handleLogout = () => {
     localStorage.removeItem("token");
-    // Optional: clear user data too
     localStorage.removeItem("user");
     navigate("/login");
   };
 
+  // ====================== LOADING STATE ======================
   if (loading) {
     return <p style={{ padding: "40px", textAlign: "center" }}>Loading Dashboard...</p>;
   }
@@ -123,7 +156,9 @@ const Dashboard = () => {
             borderLeft: "5px solid #007bff",
           }}
         >
-          <h3>Welcome back, {userData.name || userData.user?.name || "User"}!</h3>
+          <h3>
+            Welcome back, {userData.name || userData.user?.name || "User"}!
+          </h3>
           <p>Email: {userData.email}</p>
         </div>
       )}
@@ -207,14 +242,30 @@ const Dashboard = () => {
         )}
 
         {/* Pagination */}
-        <div style={{ marginTop: "30px", display: "flex", gap: "10px", alignItems: "center", justifyContent: "center" }}>
-          <button disabled={page === 1} onClick={() => setPage(page - 1)} style={{ padding: "8px 16px" }}>
+        <div
+          style={{
+            marginTop: "30px",
+            display: "flex",
+            gap: "10px",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <button
+            disabled={page === 1}
+            onClick={() => setPage(page - 1)}
+            style={{ padding: "8px 16px" }}
+          >
             Prev
           </button>
           <span>
             Page {page} of {totalPages}
           </span>
-          <button disabled={page === totalPages} onClick={() => setPage(page + 1)} style={{ padding: "8px 16px" }}>
+          <button
+            disabled={page === totalPages}
+            onClick={() => setPage(page + 1)}
+            style={{ padding: "8px 16px" }}
+          >
             Next
           </button>
         </div>
