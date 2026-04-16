@@ -1,6 +1,8 @@
 // frontend/src/pages/CreatePost.jsx
 import { useState } from "react";
-import api from "../api/api";        // Make sure path is correct
+import api from "../api/api";
+import ImageUpload from "../components/ImageUpload";
+import axios from "axios";   // Kept from your second version
 
 const CreatePost = () => {
   const [title, setTitle] = useState("");
@@ -9,6 +11,7 @@ const CreatePost = () => {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
+  // ====================== FORM SUBMIT (Text Post) ======================
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -37,6 +40,28 @@ const CreatePost = () => {
     }
   };
 
+  // ====================== IMAGE UPLOAD HANDLER (axios version kept) ======================
+  const handleUpload = async (formData) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await axios.post(
+        "http://localhost:5000/api/upload",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log("Uploaded:", res.data);
+      // You can add success message or store the image URL here if needed
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <div style={{ maxWidth: "600px", margin: "40px auto", padding: "20px" }}>
       <h2>Create New Post</h2>
@@ -62,6 +87,9 @@ const CreatePost = () => {
           style={{ padding: "10px", fontSize: "16px" }}
           required
         />
+
+        {/* Image Upload Component - kept as per your request */}
+        <ImageUpload onUpload={handleUpload} />
 
         <button 
           type="submit" 
