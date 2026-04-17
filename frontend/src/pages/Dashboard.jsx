@@ -30,10 +30,10 @@ const Dashboard = () => {
 
       try {
         // Fetch user profile
-        const userRes = await api.get("/users/profile");
+        const userRes = await api.get("https://authentication-3v7a.onrender.com/users/profile");
 
         // Fetch posts with pagination
-        const postsRes = await api.get(`/posts?page=${page}&limit=5`);
+        const postsRes = await api.get(`https://authentication-3v7a.onrender.com/posts?page=${page}&limit=5`);
 
         setUserData(userRes.data);
         setPosts(postsRes.data.posts || postsRes.data || []);

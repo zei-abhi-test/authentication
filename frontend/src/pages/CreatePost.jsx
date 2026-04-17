@@ -17,7 +17,7 @@ const CreatePost = () => {
   const handleUpload = async (formData) => {
     try {
       setUploading(true);
-      const res = await api.post("/upload", formData);
+      const res = await api.post("https://authentication-3v7a.onrender.com/upload", formData);
       setCoverImageUrl(res.data.imageUrl || res.data.url);
       toast.success("Image uploaded successfully!");
     } catch (err) {
@@ -45,7 +45,7 @@ const CreatePost = () => {
         coverImage: coverImageUrl || null,
       };
 
-      await api.post("/posts", postData);
+      await api.post("https://authentication-3v7a.onrender.com/posts", postData);
 
       toast.success("Post created successfully!");
       setTitle("");

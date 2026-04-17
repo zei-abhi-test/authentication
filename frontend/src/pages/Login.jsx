@@ -27,7 +27,7 @@ const Login = () => {
     setError("");
 
     try {
-      const res = await api.post("/users/login", formData);
+      const res = await api.post("https://authentication-3v7a.onrender.com/users/login", formData);
 
       if (res.status === 200 && res.data.token) {
         // ✅ Store the token properly

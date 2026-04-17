@@ -17,7 +17,7 @@ const EditPost = () => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const res = await api.get(`/posts/${id}`);
+        const res = await api.get(`https://authentication-3v7a.onrender.com/posts/${id}`);
         setTitle(res.data.title);
         setContent(res.data.content);
       } catch (err) {
@@ -36,7 +36,7 @@ const EditPost = () => {
     setError("");
 
     try {
-      await api.put(`/posts/${id}`, { title, content });
+      await api.put(`https://authentication-3v7a.onrender.com/posts/${id}`, { title, content });
       alert("Post updated successfully!");
       navigate("/dashboard");
     } catch (err) {

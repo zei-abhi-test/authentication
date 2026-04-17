@@ -30,7 +30,7 @@ function Register() {
       setError("");
       setSuccess("");
 
-    await api.post("/users/register", { name, email, password });
+    await api.post("https://authentication-3v7a.onrender.com/users/register", { name, email, password });
 
       setSuccess("Registration successful! You can now login.");
       setFormData({ name: "", email: "", password: "", confirmPassword: "" });
