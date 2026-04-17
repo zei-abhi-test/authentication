@@ -16,6 +16,12 @@ const {
 
 router.post("/register", registerUser)
 router.post("/login", loginUser)
+router.get ("/dashboard", authMiddleware, (req, res) => {
+  res.json({
+    message: "Welcome to your dashboard",
+    user: req.user
+  })
+}),
 
 router.get("/profile", authMiddleware, getProfile)
 
