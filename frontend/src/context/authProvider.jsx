@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo } from "react"
-import { AuthContext } from "./authContext"
+import { AuthContext } from "./AuthContext"
 
 export const AuthProvider = ({ children }) => {
 
