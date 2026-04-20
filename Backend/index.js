@@ -16,7 +16,7 @@ import authMiddleware from "./src/middleware/auth.js";
 import errorhandler from "./src/middleware/errorMiddleware.js";
 
 const app = express();
-
+// const app  = require("./app")
 // ---------- Middleware ----------
 app.use(
   cors({
