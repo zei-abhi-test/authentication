@@ -6,11 +6,14 @@
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js",
-    "type": "module" ,
-    "test" : "jest" 
+    "type": "module",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
-  "jest":{
-    "testEnvironment":"node"
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {
+      "^.+\\.js$": "babel-jest"
+    }
   },
   "keywords": [],
   "author": "",
@@ -30,6 +33,9 @@
     "socket.io": "^4.8.3"
   },
   "devDependencies": {
+    "@babel/core": "^7.29.0",
+    "@babel/preset-env": "^7.29.2",
+    "babel-jest": "^30.3.0",
     "concurrently": "^9.2.1",
     "jest": "^30.3.0",
     "supertest": "^7.2.2"
