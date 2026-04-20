@@ -1,6 +1,6 @@
 const request = require("supertest");
 const mongoose = require("mongoose");
-const app = require("./src/app");           // Correct path from tests/ → src/app.js
+const app = require("../src/app");           // Correct path from tests/ → src/app.js
 const User = require("../src/models/User");  // Correct path from tests/ → src/models/User.js
 
 beforeAll(async () => {
