@@ -1,4 +1,4 @@
-// backend/index.js  (or your main server file)
+// index.js
 import dotenv from "dotenv";
 dotenv.config(); // Must be at the very top
 
@@ -16,7 +16,7 @@ import authMiddleware from "./src/middleware/auth.js";
 import errorhandler from "./src/middleware/errorMiddleware.js";
 
 const app = express();
-// const app  = require("./app")
+
 // ---------- Middleware ----------
 app.use(
   cors({
@@ -28,10 +28,10 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ---------- Routes (Register WITHOUT io) ----------
+// ---------- Routes ----------
 app.use("/api/users", userRoutes);
-app.use("/api/auth", userRoutes);     // Keep if you intentionally want both paths
-app.use("/api/posts", postRoutes);    // Main posts route
+app.use("/api/auth", userRoutes);     // Keep both if you intentionally want both paths
+app.use("/api/posts", postRoutes);
 app.use("/api/upload", uploadRoutes);
 
 // Protected route example
