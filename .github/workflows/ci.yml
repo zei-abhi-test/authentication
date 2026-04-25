@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v3
 
       - name: Setup Node.js
@@ -19,20 +19,20 @@ jobs:
         with:
           node-version: 18
 
-      # Server
-      - name: Install server dependencies
+      # ---------- BACKEND ----------
+      - name: Install Backend Dependencies
         working-directory: ./Backend
         run: npm ci
 
-      - name: Run server tests
+      - name: Run Backend Tests
         working-directory: ./Backend
         run: npm test
 
-      # Client
-      - name: Install client dependencies
+      # ---------- FRONTEND ----------
+      - name: Install Frontend Dependencies
         working-directory: ./frontend
         run: npm ci
 
-      - name: Run client tests
+      - name: Run Frontend Tests
         working-directory: ./frontend
         run: npm test
