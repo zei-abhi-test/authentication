@@ -9,14 +9,11 @@
     "dev": "nodemon index.js",
     "test": "jest"
   },
-  "jest": {
-    "testEnvironment": "node",
-    "setupFilesAfterEnv": ["<rootDir>/tests/setup.js"],
-    "moduleFileExtensions": ["js"],
-    "transform": {
-      "^.+\\.js$": "babel-jest"
-    }
-  },
+"jest": {
+  "testEnvironment": "node",
+  "setupFilesAfterEnv": ["<rootDir>/tests/setup.js"],
+  "testMatch": ["**/tests/**/*.test.js"]
+},
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "cloudinary": "^1.41.3",
