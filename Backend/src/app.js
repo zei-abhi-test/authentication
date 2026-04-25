@@ -5,7 +5,7 @@ const cors = require("cors");
 // const dotenv = require("dotenv");   // Uncomment if you need it
 
 // Correct path from src/app.js → src/routes/userRoutes.js
-const userRoutes = require("./src/routes/userRoutes");
+const userRoutes = require("./routes/userRoutes");
 
 // Initialize app
 const app = express();
