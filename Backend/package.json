@@ -3,17 +3,20 @@
   "version": "1.0.0",
   "description": "Express User Authentication Backend",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
     "test": "jest"
   },
-"jest": {
-  "testEnvironment": "node",
-  "setupFilesAfterEnv": ["<rootDir>/tests/setup.js"],
-  "testMatch": ["**/tests/**/*.test.js"]
-},
+  "jest": {
+    "testEnvironment": "node",
+    "setupFilesAfterEnv": [
+      "<rootDir>/tests/setup.js"
+    ],
+    "testMatch": [
+      "**/tests/**/*.test.js"
+    ]
+  },
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "cloudinary": "^1.41.3",
@@ -27,9 +30,7 @@
     "socket.io": "^4.8.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.26.10",
     "@babel/preset-env": "^7.26.10",
-    "babel-jest": "^30.3.0",
     "concurrently": "^9.2.1",
     "jest": "^30.3.0",
     "nodemon": "^3.1.14",
