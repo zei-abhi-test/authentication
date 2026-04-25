@@ -10,14 +10,22 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    # Environment variables for tests (e.g., MongoDB test database)
+    env:
+      MONGO_URI_TEST: ${{ secrets.MONGO_URI_TEST }}
+
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 18
+          cache: 'npm'          # Added caching for faster runs
+          cache-dependency-path: |
+            Backend/package-lock.json
+            frontend/package-lock.json
 
       # ---------- BACKEND ----------
       - name: Install Backend Dependencies
