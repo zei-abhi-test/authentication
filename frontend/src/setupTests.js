@@ -1,5 +1,5 @@
-// setupTests.js
 import '@testing-library/jest-dom';
+import { TextEncoder, TextDecoder } from 'util';
 
-// You can add any global test setup here
-// For example: extending expect, mocking APIs, etc.
+global.TextEncoder = TextEncoder;
+global.TextDecoder = TextDecoder;
