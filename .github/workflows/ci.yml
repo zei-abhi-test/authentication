@@ -39,11 +39,11 @@ jobs:
 
       # ---------- BACKEND ----------
       - name: Install Backend Dependencies
-        working-directory: ./backend
+        working-directory: ./Backend
         run: npm ci
 
       - name: Run Backend Tests
-        working-directory: ./backend
+        working-directory: ./Backend
         run: npm test
 
       # ---------- FRONTEND ----------
