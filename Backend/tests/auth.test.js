@@ -110,3 +110,4 @@ describe("Auth API", () => {
     expect(res.statusCode).toBe(400);   // Change to 409 if your controller returns 409
   });
 });
+
