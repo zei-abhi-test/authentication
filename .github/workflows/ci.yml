@@ -10,20 +10,18 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    # MongoDB service container (fresh DB for every CI run)
     services:
       mongodb:
         image: mongo:7.0
         ports:
           - 27017:27017
         options: >-
-          --health-cmd "mongosh --eval 'db.adminCommand(\"ping\")'"
+          --health-cmd "mongosh --quiet --eval 'db.adminCommand(\"ping\")'"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
 
     env:
-      # Use the service container address (works inside GitHub runner)
       MONGO_URI_TEST: mongodb://localhost:27017/testdb?retryWrites=true&w=majority
 
     steps:
@@ -36,16 +34,16 @@ jobs:
           node-version: 18
           cache: 'npm'
           cache-dependency-path: |
-            Backend/package-lock.json
+            backend/package-lock.json
             frontend/package-lock.json
 
       # ---------- BACKEND ----------
       - name: Install Backend Dependencies
-        working-directory: ./Backend
+        working-directory: ./backend
         run: npm ci
 
       - name: Run Backend Tests
-        working-directory: ./Backend
+        working-directory: ./backend
         run: npm test
 
       # ---------- FRONTEND ----------
@@ -56,3 +54,29 @@ jobs:
       - name: Run Frontend Tests
         working-directory: ./frontend
         run: npm test
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # 🔹 Deploy Backend (Render)
+      - name: Deploy Backend to Render
+        run: |
+          curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
+
+      # 🔹 Deploy Frontend (Vercel)
+      - name: Install Vercel CLI
+        run: npm install -g vercel
+
+      - name: Deploy Frontend to Vercel
+        working-directory: ./frontend
+        run: |
+          vercel --prod --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
