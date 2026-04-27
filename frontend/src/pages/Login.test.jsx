@@ -13,7 +13,7 @@ describe("Login Component", () => {
   it("renders login form elements", () => {
     renderWithRouter(<Login />)
 
-    expect(screen.getByText(/login/i)).toBeInTheDocument()
+    expect(screen.getByRole("heading", { name: /login/i })).toBeInTheDocument()
     expect(screen.getByPlaceholderText(/email/i)).toBeInTheDocument()
     expect(screen.getByPlaceholderText(/password/i)).toBeInTheDocument()
   })
