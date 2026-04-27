@@ -10,14 +10,34 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    # MongoDB service container (fresh DB for every CI run)
+    services:
+      mongodb:
+        image: mongo:7.0
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --eval 'db.adminCommand(\"ping\")'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      # Use the service container address (works inside GitHub runner)
+      MONGO_URI_TEST: mongodb://localhost:27017/testdb?retryWrites=true&w=majority
+
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 18
+          cache: 'npm'
+          cache-dependency-path: |
+            Backend/package-lock.json
+            frontend/package-lock.json
 
       # ---------- BACKEND ----------
       - name: Install Backend Dependencies

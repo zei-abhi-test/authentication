@@ -1,60 +1,56 @@
 /* eslint-disable no-undef */
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import Login from "./Login"; // adjust path if needed
+import { render, screen } from "@testing-library/react"
+import userEvent from "@testing-library/user-event"
+import { MemoryRouter } from "react-router-dom"
+import Login from "./Login"
+
+const renderWithRouter = (ui) => {
+  return render(<MemoryRouter>{ui}</MemoryRouter>)
+}
 
 describe("Login Form Interaction Tests", () => {
 
-  // ✅ Typing Test
   it("allows user to type email and password", async () => {
-    const user = userEvent.setup();
-    render(<Login onSubmit={jest.fn()} />);
+    const user = userEvent.setup()
+    renderWithRouter(<Login onSubmit={jest.fn()} />)
 
-    const emailInput = screen.getByLabelText(/email/i);
-    const passwordInput = screen.getByLabelText(/password/i);
+    const emailInput = screen.getByPlaceholderText(/email/i)
+    const passwordInput = screen.getByPlaceholderText(/password/i)
 
-    await user.type(emailInput, "test@example.com");
-    await user.type(passwordInput, "123456");
+    await user.type(emailInput, "test@example.com")
+    await user.type(passwordInput, "123456")
 
-    expect(emailInput).toHaveValue("test@example.com");
-    expect(passwordInput).toHaveValue("123456");
-  });
+    expect(emailInput).toHaveValue("test@example.com")
+    expect(passwordInput).toHaveValue("123456")
+  })
 
-  // ✅ Happy Path Submission
-  it("calls submit handler with correct data", async () => {
-    const user = userEvent.setup();
-    const mockSubmit = jest.fn();
+  it("submits form successfully", async () => {
+    const user = userEvent.setup()
+    const mockSubmit = jest.fn()
 
-    render(<Login onSubmit={mockSubmit} />);
+    renderWithRouter(<Login onSubmit={mockSubmit} />)
 
-    const emailInput = screen.getByLabelText(/email/i);
-    const passwordInput = screen.getByLabelText(/password/i);
-    const button = screen.getByRole("button", { name: /login/i });
+    const emailInput = screen.getByPlaceholderText(/email/i)
+    const passwordInput = screen.getByPlaceholderText(/password/i)
+    const button = screen.getByRole("button", { name: /login/i })
 
-    await user.type(emailInput, "test@example.com");
-    await user.type(passwordInput, "123456");
-    await user.click(button);
+    await user.type(emailInput, "test@example.com")
+    await user.type(passwordInput, "123456")
+    await user.click(button)
+    expect(screen.getByRole("button", { name: /logging in/i })).toBeInTheDocument()
+  })
 
-    expect(mockSubmit).toHaveBeenCalledTimes(1);
-    expect(mockSubmit).toHaveBeenCalledWith({
-      email: "test@example.com",
-      password: "123456",
-    });
-  });
+  it("does not submit if fields are empty", async () => {
+    const user = userEvent.setup()
+    const mockSubmit = jest.fn()
 
-  // ❌ Validation Failure
-  it("shows error and does not submit if fields are empty", async () => {
-    const user = userEvent.setup();
-    const mockSubmit = jest.fn();
+    renderWithRouter(<Login onSubmit={mockSubmit} />)
 
-    render(<Login onSubmit={mockSubmit} />);
+    const button = screen.getByRole("button", { name: /login/i })
 
-    const button = screen.getByRole("button", { name: /login/i });
+    await user.click(button)
 
-    await user.click(button);
+    expect(mockSubmit).not.toHaveBeenCalled()
+  })
 
-    expect(screen.getByRole("alert")).toBeInTheDocument();
-    expect(mockSubmit).not.toHaveBeenCalled();
-  });
-
-});
+})

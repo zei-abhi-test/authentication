@@ -1,48 +1,44 @@
 /* eslint-disable no-undef */
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import Login from "./Login";   // adjust if your file is named differently
+import { render, screen } from "@testing-library/react"
+import userEvent from "@testing-library/user-event"
+import { MemoryRouter } from "react-router-dom"
+import Login from "./Login"
 
- 
+const renderWithRouter = (ui) => {
+  return render(<MemoryRouter>{ui}</MemoryRouter>)
+}
+
 describe("Login Component", () => {
 
-   
   it("renders login form elements", () => {
-    render(<Login />);
+    renderWithRouter(<Login />)
 
-    expect(screen.getByText(/login/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
-  });
+    expect(screen.getByRole("heading", { name: /login/i })).toBeInTheDocument()
+    expect(screen.getByPlaceholderText(/email/i)).toBeInTheDocument()
+    expect(screen.getByPlaceholderText(/password/i)).toBeInTheDocument()
+  })
 
   it("allows user to type in inputs", async () => {
-    render(<Login />);
+    renderWithRouter(<Login />)
 
-    const emailInput = screen.getByLabelText(/email/i);
-    const passwordInput = screen.getByLabelText(/password/i);
+    const emailInput = screen.getByPlaceholderText(/email/i)
+    const passwordInput = screen.getByPlaceholderText(/password/i)
 
-    await userEvent.type(emailInput, "test@example.com");
-    await userEvent.type(passwordInput, "123456");
+    await userEvent.type(emailInput, "test@example.com")
+    await userEvent.type(passwordInput, "123456")
 
-    expect(emailInput).toHaveValue("test@example.com");
-    expect(passwordInput).toHaveValue("123456");
-  });
+    expect(emailInput).toHaveValue("test@example.com")
+    expect(passwordInput).toHaveValue("123456")
+  })
 
   it("submits form when button is clicked", async () => {
-    // eslint-disable-next-line no-unused-vars
-    const mockSubmit = jest.fn();   // Optional: better test for form submission
+    renderWithRouter(<Login />)
 
-    render(<Login />);
+    const button = screen.getByRole("button", { name: /login/i })
 
-    const button = screen.getByRole("button", { name: /login/i });
+    await userEvent.click(button)
 
-    await userEvent.click(button);
+    expect(button).toBeInTheDocument()
+  })
 
-    // Basic check
-    expect(button).toBeInTheDocument();
-
-    // If you pass onSubmit as prop or use form handling, you can test it like this:
-    // expect(mockSubmit).toHaveBeenCalled();  // if you mock the handler
-  });
-
-});
+})
