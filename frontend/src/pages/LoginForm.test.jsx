@@ -37,7 +37,7 @@ describe("Login Form Interaction Tests", () => {
     await user.type(emailInput, "test@example.com")
     await user.type(passwordInput, "123456")
     await user.click(button)
-    expect(screen.getByRole("button", { name: /login/i })).toBeInTheDocument()
+    expect(screen.getByRole("button", { name: /logging in/i })).toBeInTheDocument()
   })
 
   it("does not submit if fields are empty", async () => {
